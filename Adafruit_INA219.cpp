@@ -192,9 +192,9 @@ void Adafruit_INA219::setCalibration_32V_1A(void)
   // also need to change any relevant register settings, such as
   // setting the VBUS_MAX to 16V instead of 32V, etc.
 
-  // VBUS_MAX = 32V		(Assumes 32V, can also be set to 16V)
-  // VSHUNT_MAX = 0.32	(Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
-  // RSHUNT = 0.1			(Resistor value in ohms)
+  // VBUS_MAX = 32V   (Assumes 32V, can also be set to 16V)
+  // VSHUNT_MAX = 0.32  (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
+  // RSHUNT = 0.1     (Resistor value in ohms)
 
   // 1. Determine max possible current
   // MaxPossible_I = VSHUNT_MAX / RSHUNT
@@ -252,7 +252,7 @@ void Adafruit_INA219::setCalibration_32V_1A(void)
 
   // Set multipliers to convert raw current/power values
   ina219_currentDivider_mA = 25;      // Current LSB = 40uA per bit (1000/40 = 25)
-  ina219_powerMultiplier_mW = 0.8f;   // Power LSB = 800uW per bit
+  ina219_powerMultiplier_mW = 1;         // Power LSB = 800mW per bit
 
   // Set Calibration register to 'Cal' calculated above
   wireWriteRegister(INA219_REG_CALIBRATION, ina219_calValue);
@@ -342,8 +342,8 @@ void Adafruit_INA219::setCalibration_16V_400mA(void) {
   // MaximumPower = 6.4W
 
   // Set multipliers to convert raw current/power values
-  ina219_currentDivider_mA = 20;    // Current LSB = 50uA per bit (1000/50 = 20)
-  ina219_powerMultiplier_mW = 1.0f; // Power LSB = 1mW per bit
+  ina219_currentDivider_mA = 20;  // Current LSB = 50uA per bit (1000/50 = 20)
+  ina219_powerMultiplier_mW = 1;     // Power LSB = 1mW per bit
 
   // Set Calibration register to 'Cal' calculated above
   wireWriteRegister(INA219_REG_CALIBRATION, ina219_calValue);
@@ -357,6 +357,112 @@ void Adafruit_INA219::setCalibration_16V_400mA(void) {
   wireWriteRegister(INA219_REG_CONFIG, config);
 }
 
+/*!
+    @brief  Configures to INA219 to be able to measure up to 16V and 50A
+            of current USING AND EXTERNAL SHUNT.  Each unit of current corresponds to 100uA, and
+            each unit of power corresponds to 2mW. Counter overflow
+            occurs at 3.2A.
+    @note   These calculations assume a 75Mv 50a SHUNT is present
+*/
+/**************************************************************************/
+void Adafruit_INA219::setCalibration_Ext_16V_75mV_50A(void)
+{
+
+  //ADDED FUNCTION FOR USING EXTERNAL 75Mv 50a SHUNT
+
+  // By default we use a pretty huge range for the input voltage,
+  // which probably isn't the most appropriate choice for system
+  // that don't use a lot of power.  But all of the calculations
+  // are shown below if you want to change the settings.  You will
+  // also need to change any relevant register settings, such as
+  // setting the VBUS_MAX to 16V instead of 32V, etc.
+
+  // VBUS_MAX = 16V             (Assumes 16V, can also be set to 32V)
+  // VSHUNT_MAX = 0.080          (Assumes Gain 2, 80mV, can also be 0.16, 0.08, 0.04)
+  // RSHUNT = 0.0015               (Resistor value in ohms)
+
+  // 1. Determine max possible current
+  // MaxPossible_I = VSHUNT_MAX / RSHUNT
+  // MaxPossible_I = 50A
+
+  // 2. Determine max expected current
+  // MaxExpected_I = 50A
+
+  // 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
+  // MinimumLSB = MaxExpected_I/32767
+  // MinimumLSB = 0.001525              (1.5mA per bit)
+  // MaximumLSB = MaxExpected_I/4096
+  // MaximumLSB = 0,012207              (12.2mA per bit)
+
+  // 4. Choose an LSB between the min and max values
+  //    (Preferrably a roundish number close to MinLSB)
+  // CurrentLSB = 0.002 (2mA per bit)
+
+  // 5. Compute the calibration register
+  // Cal = trunc (0.04096 / (Current_LSB * RSHUNT))
+  // Cal = 27306 (0x1000)
+
+//ina219_calValue = 13653;
+ //ina219_calValue = 27306;
+ina219_calValue = 39900;
+//ina219_calValue = 54612;
+//ina219_calValue = 65535;
+
+//ina219_calValue = 34000;
+
+  // 6. Calculate the power LSB
+  // PowerLSB = 20 * CurrentLSB
+  // PowerLSB = 0.02 (20mW per bit)
+
+  // 7. Compute the maximum current and shunt voltage values before overflow
+  //
+  // Max_Current = Current_LSB * 32767
+  // Max_Current = 32.767A before overflow
+  //
+  // If Max_Current > Max_Possible_I then
+  //    Max_Current_Before_Overflow = MaxPossible_I
+  // Else
+  //    Max_Current_Before_Overflow = Max_Current
+  // End If
+  //
+  // Max_ShuntVoltage = Max_Current_Before_Overflow * RSHUNT
+  // Max_ShuntVoltage = 0.049V
+  //
+  // If Max_ShuntVoltage >= VSHUNT_MAX
+  //    Max_ShuntVoltage_Before_Overflow = VSHUNT_MAX
+  // Else
+  //    Max_ShuntVoltage_Before_Overflow = Max_ShuntVoltage
+  // End If
+
+  // 8. Compute the Maximum Power
+  // MaximumPower = Max_Current_Before_Overflow * VBUS_MAX
+  // MaximumPower = 32.767 * 16V
+  // MaximumPower = 524.2W
+
+
+  // Set multipliers to convert raw current/power values
+  ina219_currentDivider_mA = 1 ;  // Current LSB = 2000uA per bit (1000/2000 = 0.5)
+  ina219_powerMultiplier_mW = 0.1 ;     // Power LSB = 20mW per bit (2/20)
+
+  // Set Calibration register to 'Cal' calculated above
+  wireWriteRegister(INA219_REG_CALIBRATION, ina219_calValue);
+
+  // Set Config register to take into account the settings above
+  uint16_t config = INA219_CONFIG_BVOLTAGERANGE_16V |
+                    INA219_CONFIG_GAIN_2_80MV |
+                    INA219_CONFIG_BADCRES_12BIT |
+                    INA219_CONFIG_SADCRES_12BIT_1S_532US |
+                    INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+  wireWriteRegister(INA219_REG_CONFIG, config);
+
+//  Serial.println("range 16V");
+//  Serial.println("gain 2 80mV");
+//  Serial.print("Current divider: ");
+//  Serial.println(ina219_currentDivider_mA);
+//  Serial.print("ina219_calValue: ");
+//  Serial.println(ina219_calValue);
+}
+
 /**************************************************************************/
 /*!
     @brief  Instantiates a new INA219 class
@@ -366,7 +472,7 @@ void Adafruit_INA219::setCalibration_16V_400mA(void) {
 Adafruit_INA219::Adafruit_INA219(uint8_t addr) {
   ina219_i2caddr = addr;
   ina219_currentDivider_mA = 0;
-  ina219_powerMultiplier_mW = 0.0f;
+  ina219_powerMultiplier_mW = 0;
 }
 
 /**************************************************************************/

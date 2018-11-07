@@ -130,7 +130,7 @@ enum {
     INA219_CONFIG_SADCRES_10BIT_1S_148US   = (0x0008),  // 1 x 10-bit shunt sample
     INA219_CONFIG_SADCRES_11BIT_1S_276US   = (0x0010),  // 1 x 11-bit shunt sample
     INA219_CONFIG_SADCRES_12BIT_1S_532US   = (0x0018),  // 1 x 12-bit shunt sample
-    INA219_CONFIG_SADCRES_12BIT_2S_1060US  = (0x0048),	 // 2 x 12-bit shunt samples averaged together
+    INA219_CONFIG_SADCRES_12BIT_2S_1060US  = (0x0048),   // 2 x 12-bit shunt samples averaged together
     INA219_CONFIG_SADCRES_12BIT_4S_2130US  = (0x0050),  // 4 x 12-bit shunt samples averaged together
     INA219_CONFIG_SADCRES_12BIT_8S_4260US  = (0x0058),  // 8 x 12-bit shunt samples averaged together
     INA219_CONFIG_SADCRES_12BIT_16S_8510US = (0x0060),  // 16 x 12-bit shunt samples averaged together
@@ -216,6 +216,7 @@ class Adafruit_INA219{
   void setCalibration_32V_2A(void);
   void setCalibration_32V_1A(void);
   void setCalibration_16V_400mA(void);
+  void setCalibration_Ext_16V_75mV_50A(void);
   float getBusVoltage_V(void);
   float getShuntVoltage_mV(void);
   float getCurrent_mA(void);
@@ -229,7 +230,7 @@ class Adafruit_INA219{
   // The following multipliers are used to convert raw current and power
   // values to mA and mW, taking into account the current config settings
   uint32_t ina219_currentDivider_mA;
-  float    ina219_powerMultiplier_mW;
+  uint32_t ina219_powerMultiplier_mW;
 
   void init();
   void wireWriteRegister(uint8_t reg, uint16_t value);
