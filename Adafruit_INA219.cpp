@@ -472,6 +472,16 @@ void Adafruit_INA219::begin(TwoWire *theWire) {
   init();
 }
 
+/**************************************************************************/
+/*!
+    @brief  Setups the HW using the default Wire object
+*/
+/**************************************************************************/
+void Adafruit_INA219::begin(void) {
+  _i2c = &Wire;
+  init();
+}
+
 /*!
  *  @brief  begin I2C and set up the hardware
  */
