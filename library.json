@@ -1,0 +1,28 @@
+{
+    "name": "Sense INA219",
+    "description": "Sense implementation of the Adafruit INA219 Library",
+    "keywords": "INA219",
+    "authors":
+    [
+        {
+            "name": "Bas Schouten",
+            "maintainer": true
+        },
+        {
+            "name": "Jeroen van de Vorst"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/I-Connect/Sense_INA219.git"
+    },
+    "frameworks": "Arduino",
+    "platforms": [
+        "espressif32",
+        "atmelavr"
+    ],
+    "build": {
+        "flags": "-Wno-unused-function"
+    },
+    "dependencies": []
+}
