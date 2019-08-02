@@ -1,5 +1,5 @@
 {
-    "name": "Sense INA219",
+    "name": "Sense_INA219",
     "description": "Sense implementation of the Adafruit INA219 Library",
     "keywords": "INA219",
     "authors":
