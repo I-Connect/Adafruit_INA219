@@ -14,7 +14,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/I-Connect/Sense_INA219.git"
+        "url": "I-Connect/Sense_INA219"
     },
     "frameworks": "Arduino",
     "platforms": [
