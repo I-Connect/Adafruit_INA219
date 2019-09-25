@@ -43,6 +43,7 @@ void INA219aShuntSensor::initialize() {
   ina219.begin();
   ina219.setCalibration_Ext_16V_75mV_50A();
   sensorActive = true;
+  SenseI2CBusSensor::initialize();
 }
 
 byte * INA219aShuntSensor::getValueInBuffer(byte * buffer) {
