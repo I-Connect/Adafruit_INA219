@@ -23,7 +23,6 @@ public:
   byte* getValueInBuffer(byte* buffer) override;
   byte getMinBufferSize() override;
   ShuntValue* getLastValues() { return &lastValues; };
-  void setValueFromBLE(std::string&) override {};
 
 protected:
   void readRawValue() override;
