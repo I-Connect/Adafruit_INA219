@@ -1,18 +1,16 @@
 // INA219ShuntSensor.h
 #pragma once
 
-#include "arduino.h"
-#include <string>
-#include "SenseI2CBusSensor.h"
-#include "ISenseShuntValued.h"
 #include "Adafruit_INA219.h"
-
+#include "Arduino.h"
+#include "ISenseShuntValued.h"
+#include "SenseI2CBusSensor.h"
 
 /*
-  I2C address: 0x40
-*/
-class INA219aShuntSensor : public SenseI2CBusSensor
-{
+ * SenseNode implementation for an INA219 Shunt sensorI2C 
+ * Address: 0x40
+ */
+class INA219aShuntSensor : public SenseI2CBusSensor {
 public:
   INA219aShuntSensor(uint8_t sensorId);
   ~INA219aShuntSensor();
@@ -31,4 +29,3 @@ private:
   Adafruit_INA219 ina219;
   ShuntValue lastValues;
 };
-
