@@ -15,7 +15,7 @@ float INA219aShuntSensor::getValueAsFloat() {
   return lastValues.getCurrent_mA();
 }
 
-char* INA219aShuntSensor::getValueAsChars(char* value) {
+char* INA219aShuntSensor::getValueAsChar(char* value, uint8_t size) {
   return lastValues.asChars(value);
 }
 
@@ -28,7 +28,7 @@ void INA219aShuntSensor::readRawValue() {
     sv = +ina219.getShuntVoltage_mV();
     bv += ina219.getBusVoltage_V();
     c += ina219.getCurrent_mA();
-    delay(200);
+    delay(5);
   }
   lastValues.setShuntVoltage_mV(sv / SAMPLES);
   lastValues.setBusVoltage_V(bv / SAMPLES);

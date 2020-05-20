@@ -17,7 +17,7 @@ public:
 
   void initialize() override;
   float getValueAsFloat() override;
-  char* getValueAsChars(char* value) override;
+  char* getValueAsChar(char* value, uint8_t size) override;
   byte* getValueInBuffer(byte* buffer) override;
   byte getMinBufferSize() override;
   ShuntValue* getLastValues() { return &lastValues; };
