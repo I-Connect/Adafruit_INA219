@@ -4,13 +4,13 @@
 #include "Adafruit_INA219.h"
 #include "Arduino.h"
 #include "ISenseShuntValued.h"
-#include "SenseI2CBusSensor.h"
+#include "I2CBusSensor.h"
 
 /*
  * SenseNode implementation for an INA219 Shunt sensorI2C 
  * Address: 0x40
  */
-class INA219aShuntSensor : public SenseI2CBusSensor {
+class INA219aShuntSensor : public Sense::SenseI2CBusSensor {
 public:
   INA219aShuntSensor(uint8_t sensorId);
   ~INA219aShuntSensor();

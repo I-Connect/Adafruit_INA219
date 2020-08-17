@@ -5,7 +5,7 @@
 #include "INA219ShuntSensor.h"
 #include "SenseUtils.h"
 
-INA219aShuntSensor::INA219aShuntSensor(uint8_t sensorId) : SenseI2CBusSensor(sensorId) {
+INA219aShuntSensor::INA219aShuntSensor(uint8_t sensorId) : Sense::SenseI2CBusSensor(sensorId) {
 }
 
 INA219aShuntSensor::~INA219aShuntSensor() {
