@@ -5,18 +5,14 @@
 #include "INA219ShuntSensor.h"
 #include "SenseUtils.h"
 
-INA219aShuntSensor::INA219aShuntSensor(uint8_t sensorId) : Sense::SenseI2CBusSensor(sensorId) {
+INA219aShuntSensor::INA219aShuntSensor(uint8_t sensorId) : Sense::I2CBusSensor(), Sense::ObservableNode<ShuntValue>(sensorId) {
 }
 
 INA219aShuntSensor::~INA219aShuntSensor() {
 }
 
-float INA219aShuntSensor::getValueAsFloat() {
-  return lastValues.getCurrent_mA();
-}
-
-char* INA219aShuntSensor::getValueAsChar(char* value, uint8_t size) {
-  return lastValues.asChars(value);
+char* INA219aShuntSensor::getReadableValue(char* value, uint8_t size) {
+  return getSingleValue().asChars(value);
 }
 
 void INA219aShuntSensor::readRawValue() {
@@ -30,9 +26,11 @@ void INA219aShuntSensor::readRawValue() {
     c += ina219.getCurrent_mA();
     delay(5);
   }
+  ShuntValue lastValues;
   lastValues.setShuntVoltage_mV(sv / SAMPLES);
   lastValues.setBusVoltage_V(bv / SAMPLES);
   lastValues.setCurrent_mA(c / SAMPLES);
+  setSingleValue(lastValues, false);
   csSerialPrint(F("Current: "));
   csSerialPrint(lastValues.getCurrent_mA());
   csSerialPrintln(" mA");
@@ -42,14 +40,6 @@ void INA219aShuntSensor::initialize() {
   ina219.begin();
   ina219.setCalibration_Ext_16V_75mV_50A();
   sensorActive = true;
-  SenseI2CBusSensor::initialize();
+  Sense::ObservableNode<ShuntValue>::initialize();
 }
 
-byte* INA219aShuntSensor::getValueInBuffer(byte* buffer) {
-  memcpy(buffer, &lastValues, sizeof(ShuntValue));
-  return buffer;
-}
-
-byte INA219aShuntSensor::getMinBufferSize() {
-  return sizeof(ShuntValue);
-}
