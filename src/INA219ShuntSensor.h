@@ -13,7 +13,7 @@
  */
 class INA219aShuntSensor : public Sense::I2CBusSensor, public Sense::ObservableNode<ShuntValue> {
 public:
-  INA219aShuntSensor(uint8_t sensorId);
+  INA219aShuntSensor(uint8_t sensorId, bool externalShunt = true);
   ~INA219aShuntSensor();
 
   void initialize() override;
@@ -24,4 +24,5 @@ protected:
 
 private:
   Adafruit_INA219 ina219;
+  bool externalShunt;
 };
