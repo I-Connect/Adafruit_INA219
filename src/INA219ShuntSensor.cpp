@@ -22,11 +22,12 @@ void INA219aShuntSensor::readRawValue() {
   float bv = 0;
   float c  = 0;
   for (uint8_t i = 0; i < trunc(SAMPLES); i++) {
-    takeI2CSemaphore();
-    sv = +ina219.getShuntVoltage_mV();
-    bv += ina219.getBusVoltage_V();
-    c += ina219.getCurrent_mA();
-    giveI2CSemaphore();
+    if(takeI2CSemaphore()){
+      sv = +ina219.getShuntVoltage_mV();
+      bv += ina219.getBusVoltage_V();
+      c += ina219.getCurrent_mA();
+      giveI2CSemaphore();
+    }
     delay(5);
   }
   ShuntValue lastValues;
@@ -43,12 +44,14 @@ void INA219aShuntSensor::readRawValue() {
 }
 
 void INA219aShuntSensor::initialize() {
-  takeI2CSemaphore();
-  ina219.begin();
-  if(externalShunt){
-    ina219.setCalibration_Ext_16V_75mV_50A();
+  if(takeI2CSemaphore()){
+    ina219.begin();
+    if(externalShunt){
+      ina219.setCalibration_Ext_16V_75mV_50A();
+    }
+    giveI2CSemaphore();
   }
-  giveI2CSemaphore();
+  
   sensorActive = true;
   Sense::ObservableNode<ShuntValue>::initialize();
 }
